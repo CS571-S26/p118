@@ -1,49 +1,41 @@
 // DebateCard.jsx
 import React from "react";
+import { Card } from "react-bootstrap";
 
-function DebateCard({
+export default function DebateCard({
   title,
   source,
   leaning,
+  img,
   heatPercent,
   commentCount,
   variant = "default",
   onClick
 }) {
 
-   const isFeatured = variant === "featured";
+  const isFeatured = variant === "featured";
 
   return (
-    <article
-      className={"debate-card" + (isFeatured ? " debate-card--featured" : "")}
-      onClick={onClick}
-      style={{ cursor: onClick ? "pointer" : undefined }}
-    >
-      {isFeatured && <div className="debate-card__featured-label">Top Debate</div>}
+    <Card className={"debate-card" + (isFeatured ? " debate-card--featured" : "")} onClick={onClick} style={{ cursor: onClick ? "pointer" : undefined }}>
+      {isFeatured && <Card.Header className="debate-card__featured-label">Top Debate</Card.Header>}
 
-      <header className="debate-card__header">
-        <span className={`debate-card__tag debate-card__tag--${leaning.toLowerCase()}`}>
-          {leaning}
-        </span>
-        <span className="debate-card__source">{source}</span>
-      </header>
+      <Card.Body>
+        <Card.Title className="debate-card__title">{title}</Card.Title>
+        <Card.Text className="debate-card__source">{source}</Card.Text>
+        {img && (
+          <img
+            src={img}
+            alt={title}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        )}
+      </Card.Body>
 
-      <h3 className="debate-card__title">{title}</h3>
-
-      <div className="debate-card__media" aria-hidden="true" />
-
-      <footer className="debate-card__footer">
+      <Card.Footer className="debate-card__footer">
         <span className="debate-card__heat">🔥 {heatPercent}% hot</span>
         <span className="debate-card__divider">·</span>
         <span className="debate-card__comments">{commentCount} comments</span>
-      </footer>
-
-      {isFeatured && (
-        <button type="button" className="btn btn--primary debate-card__cta">
-          Join Debate
-        </button>
-      )}
-    </article>
+      </Card.Footer>
+    </Card>
   );
 }
-export default DebateCard;

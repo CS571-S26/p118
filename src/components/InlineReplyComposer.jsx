@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Button, Form, Stack } from "react-bootstrap";
 import useCommentsStore from "../stores/useCommentsStore.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
@@ -17,16 +18,11 @@ function InlineReplyComposer({ parent, onClose }) {
     requestAnimationFrame(() => {
       const el = textareaRef.current;
       if (!el) return;
-
-      // Scroll it into view first
       el.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      // Then focus + autosize
       el.focus({ preventScroll: true });
       autosize();
     });
   }, []);
-
 
   useEffect(() => {
     autosize();
@@ -39,18 +35,17 @@ function InlineReplyComposer({ parent, onClose }) {
     e.preventDefault();
     const text = draft.trim();
     if (!text) return;
-
     if (!requireLogin?.()) return;
-
     addComment(parent.debateId, text, parent.id, currentUser);
     setDraft("");
     onClose?.();
   };
 
   return (
-    <form className="inline-reply" onSubmit={handleSubmit}>
-      <div className="inline-reply__field">
-        <textarea
+    <Form className="inline-reply" onSubmit={handleSubmit}>
+      <Form.Group className="inline-reply__field">
+        <Form.Control
+          as="textarea"
           ref={textareaRef}
           className="inline-reply__textarea"
           placeholder={`Reply to ${parent.username}…`}
@@ -60,16 +55,16 @@ function InlineReplyComposer({ parent, onClose }) {
           rows={1}
         />
 
-        <div className="inline-reply__actions inline-reply__actions--inset">
-          <button type="button" className="btn btn--ghost" onClick={onClose}>
+        <Stack direction="horizontal" gap={2} className="inline-reply__actions inline-reply__actions--inset">
+          <Button variant="outline-secondary" onClick={onClose}>
             Cancel
-          </button>
-          <button type="submit" className="btn btn--primary" disabled={!draft.trim()}>
+          </Button>
+          <Button type="submit" variant="primary" disabled={!draft.trim()}>
             Reply
-          </button>
-        </div>
-      </div>
-    </form>
+          </Button>
+        </Stack>
+      </Form.Group>
+    </Form>
   );
 }
 

@@ -1,4 +1,6 @@
+// ChatComposer.jsx
 import React, { useEffect, useRef, useState } from "react";
+import { Button, Form, Stack } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import useCommentsStore from "../stores/useCommentsStore.js";
 
@@ -12,25 +14,21 @@ function ChatComposer({ debateId, replyTo, setReplyTo }) {
   const autosize = () => {
     const el = textareaRef.current;
     if (!el) return;
-    el.style.height = "0px";                 // reset
-    el.style.height = el.scrollHeight + "px"; // grow to fit
+    el.style.height = "0px";
+    el.style.height = el.scrollHeight + "px";
   };
 
   useEffect(() => {
-    const isReplying = replyTo?.id != null
-    if (isReplying) {
-      closeComposer();
-    }
+    const isReplying = replyTo?.id != null;
+    if (isReplying) closeComposer();
   }, [replyTo?.id]);
 
-  //Want to make sure if this is open then reply auto closes
-  //I think this logic should be handled within inlineReplyComposer
   const openComposer = () => {
     if (!requireLogin?.()) return;
     setReplyTo(null);
     setIsExpanded(true);
     requestAnimationFrame(() => {
-      textareaRef.current?.focus()
+      textareaRef.current?.focus();
       autosize();
     });
   };
@@ -47,10 +45,8 @@ function ChatComposer({ debateId, replyTo, setReplyTo }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!requireLogin?.()) return;
-
     const text = draft.trim();
     if (!text) return;
-
     addComment(debateId, text, null, currentUser);
     closeComposer();
   };
@@ -76,29 +72,29 @@ function ChatComposer({ debateId, replyTo, setReplyTo }) {
 
   // Expanded
   return (
-    <form className="composer composer--expanded" onSubmit={handleSubmit}>
-
-      <div className="composer__field">
-        <textarea
+    <Form className="composer composer--expanded" onSubmit={handleSubmit}>
+      <Form.Group className="composer__field">
+        <Form.Control
+          as="textarea"
           ref={textareaRef}
           className="composer__textarea"
-          placeholder={"Write a comment…"}
+          placeholder="Write a comment…"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onInput={autosize}
           rows={1}
         />
 
-        <div className="composer__actions composer__actions--inset">
-          <button type="button" className="btn btn--ghost" onClick={closeComposer}>
+        <Stack direction="horizontal" gap={2} className="composer__actions composer__actions--inset">
+          <Button variant="outline-secondary" onClick={closeComposer}>
             Cancel
-          </button>
-          <button type="submit" className="btn btn--primary" disabled={!draft.trim()}>
+          </Button>
+          <Button type="submit" variant="primary" disabled={!draft.trim()}>
             Comment
-          </button>
-        </div>
-      </div>
-    </form>
+          </Button>
+        </Stack>
+      </Form.Group>
+    </Form>
   );
 }
 

@@ -1,36 +1,31 @@
 import React from "react";
+import { Card, Badge } from "react-bootstrap";
 
 function HotSeatPanel({ commentConservative, commentDemocrat }) {
-  const partyClass = (leaning) => {
-    if (leaning === "Conservative") return "conservative";
-    if (leaning === "Democrat") return "democrat";
-    return "";
-  };
-
   const Slot = ({ comment, leaning, emptyText }) => (
-    <div className="hotseat-panel__slot">
-      <div className={"hotseat-slot__label " + partyClass(leaning)}>
+    <Card.Body className="hotseat-panel__slot">
+      <Badge
+        className={"hotseat-slot__label " + (leaning === "Conservative" ? "conservative" : "democrat")}
+      >
         Top {leaning} take
-      </div>
+      </Badge>
 
       {comment ? (
         <>
           <div className="comment-meta">
             <strong className="comment-username">{comment.username}</strong>
           </div>
-
-          <p>{comment.text}</p>
+          <Card.Text>{comment.text}</Card.Text>
         </>
       ) : (
-        <p className="hotseat-panel__empty">{emptyText}</p>
+        <Card.Text className="hotseat-panel__empty">{emptyText}</Card.Text>
       )}
-    </div>
+    </Card.Body>
   );
 
   return (
-    <div className="hotseat-panel">
-      <div className="hotseat-panel__label">Top Takes</div>
-      
+    <Card className="hotseat-panel">
+      <Card.Header className="hotseat-panel__label">Top Takes</Card.Header>
 
       <Slot
         comment={commentConservative}
@@ -42,7 +37,7 @@ function HotSeatPanel({ commentConservative, commentDemocrat }) {
         leaning="Democrat"
         emptyText="No Democrat takes yet."
       />
-    </div>
+    </Card>
   );
 }
 
